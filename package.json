@@ -1,0 +1,31 @@
+{
+  "name": "adv-backend-summative-medibook-project",
+  "version": "1.0.0",
+  "description": "**Weight:** 30% of final grade\r **Duration:** 2 weeks\r **Mode:** Individual project\r **Stack (mandatory):** Node.js, Express.js, MySQL (with parameterized queries only), Redis",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "worker": "node src/worker.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cassie-k01/adv-backend-summative-medibook-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cassie-k01/adv-backend-summative-medibook-project/issues"
+  },
+  "homepage": "https://github.com/cassie-k01/adv-backend-summative-medibook-project#readme",
+  "dependencies": {
+    "dotenv": "^18.0.10",
+    "express": "^5.3.0",
+    "ioredis": "^6.0.0",
+    "mysql2": "^3.24.6"
+  },
+  "devDependencies": {
+    "jest": "^30.5.2"
+  }
+}
