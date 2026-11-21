@@ -9,5 +9,6 @@ router.post('/', controller.create);
 router.get('/:id', controller.getOne);
 router.put('/:id', controller.update);
 router.delete('/:id', controller.remove);
+router.get('/:id/stats', controller.stats);
 
 module.exports = router;

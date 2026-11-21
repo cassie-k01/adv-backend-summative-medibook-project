@@ -1,6 +1,8 @@
 'use strict';
 const doctorModel = require('../models/doctorModel');
 
+const DAILY_CAP = 12;
+
 function parseId(raw) {
   const id = Number(raw);
   return Number.isInteger(id) && id >= 1 ? id : null;
@@ -101,4 +103,42 @@ async function remove(req, res, next) {
   }
 }
 
-module.exports = { list, getOne, create, update, remove };
+/**
+ * Sends back the statistics for one doctor.
+ *
+ * What the response contains:
+ *  1. revenue_collected: money paid minus any refunds
+ *  2. upcoming_appointments: booked appointments that start after now
+ *  3. next_7_days: appointments and utilization % for each of the next 7 days
+ *  4. utilization_next_7_days_pct: how full the whole week is
+ *
+ * bad id -> HTTP 400. Doctor not found -> HTTP 404.
+ */
+async function stats(req, res, next) {
+  try {
+    const id = parseId(req.params.id);
+    if (!id) return res.status(400).json({ error: 'id must be a positive integer' });
+
+    const result = await doctorModel.getStats(id);
+    if (!result) return res.status(404).json({ error: 'Doctor not found' });
+
+    const { summary, days } = result;
+    res.json({
+      doctor: {
+        id: summary.id,
+        full_name: summary.full_name,
+        specialty: summary.specialty,
+        room: summary.room,
+      },
+      revenue_collected: summary.revenue_collected,
+      upcoming_appointments: summary.upcoming_appointments,
+      daily_cap: DAILY_CAP,
+      next_7_days: days,
+      utilization_next_7_days_pct: summary.utilization_next_7_days_pct,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { list, getOne, create, update, remove, stats };
