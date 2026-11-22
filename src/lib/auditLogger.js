@@ -25,19 +25,25 @@ function ensureFolder() {
 }
 
 /**
- * Adds one line to logs/audit.log, e.g. {"timestamp":"...","event":"appointment.booked",...}
- *
- * This function never throws. If writing fails, it prints a warning
- * and the user's request carries on as normal.
+ * Adds one line to logs/audit.log. If writing fails, the error is thrown.
+ * The worker uses this one, so a failed write makes the job try again.
+ */
+async function writeAudit(event, data = {}) {
+  await ensureFolder();
+  const line = JSON.stringify({ timestamp: new Date().toISOString(), event, ...data }) + '\n';
+  await fs.promises.appendFile(LOG_FILE, line, 'utf8');
+}
+
+/**
+ * Same as writeAudit, but it never throws. If writing fails, it prints a
+ * warning and the user's request carries on as normal.
  */
 async function audit(event, data = {}) {
   try {
-    await ensureFolder();
-    const line = JSON.stringify({ timestamp: new Date().toISOString(), event, ...data }) + '\n';
-    await fs.promises.appendFile(LOG_FILE, line, 'utf8');
+    await writeAudit(event, data);
   } catch (err) {
     console.error('Could not write to the audit log:', err.message);
   }
 }
 
-module.exports = { audit };
+module.exports = { audit, writeAudit };

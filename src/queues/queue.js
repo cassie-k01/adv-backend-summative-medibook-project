@@ -3,7 +3,11 @@ const { createRedis } = require('../config/redis');
 
 // The names of the Redis lists we use.
 const KEYS = {
-  jobs: 'queue:jobs',
+  jobs: 'queue:jobs', // jobs waiting to be done
+  jobsProcessing: 'queue:jobs:processing', // jobs the worker is doing right now
+  jobsDead: 'queue:jobs:dead', // jobs that failed 3 times
+  waitlistProcessing: 'waitlist:processing', // waitlisted patients being booked right now
+  waitlistDead: 'waitlist:dead', // waitlisted patients who could not be booked
 };
 
 let client = null;
