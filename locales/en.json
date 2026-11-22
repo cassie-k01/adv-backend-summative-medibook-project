@@ -1,0 +1,21 @@
+{
+  "title": "Course Feedback",
+  "instructions": "Please answer honestly and in your own words. A few sentences for each question is plenty.",
+  "placeholder": "Write your answer here",
+  "submit": "Send my answers",
+  "thanks": "Thank you for your feedback!",
+  "questions": [
+    "Which topic in this course did you find most challenging, and why?",
+    "Describe one concept you understood only after the practical assignments. What made it click?",
+    "How has your approach to designing databases or APIs changed since the start of the trimester?",
+    "What would you improve about how this course was taught or assessed?",
+    "How do you plan to apply what you learned in this course going forward?"
+  ],
+  "answers": [
+    "The hardest part for me was seeing how everything fits together. Routes and controllers made sense on their own, but it was harder to understand how they work as a whole, especially once middleware came in, and later Redis with the queues and notifications. Following a single request from the route, through the controller, into the model and the database, and then out to a background job took real effort before it became clear.\n\nThe different forms of database normalization were also confusing at first. Splitting the clinic's spreadsheet into patients, doctors and appointments helped, because I could see why repeated details belong in their own table.",
+    "Testing. I only really understood the difference between unit tests and integration tests after the practical activities. A unit test checks one function on its own, so I can tell that it is doing its job without needing a database. It also helped me work out whether the test or the code was the problem. Most of the time it was the code, not the test.\n\nTesting edge cases and boundaries is what helps find where the code might be wrong. I used it on the refund calculator, checking exactly 24 hours and exactly 48 hours, and on the appointment time check, checking 17:00 and 09:15. That is when it clicked for me why boundaries matter so much.",
+    "I now see it as one connected cycle, a roadmap rather than separate pieces. It starts with the schema, where a lot of thought goes into the constraints, the primary and foreign keys, how the tables interact, and which columns should be unique or indexed.\n\nIn the clinic project, the schema decided a lot. For example, the rule that a doctor cannot have two appointments at the same time is enforced by the database itself with a unique constraint, so the API only has to handle that error clearly. Once the schema is planned well, the rest of the API becomes much easier, because I already know which controllers, routes and database methods I need, and I can design endpoints that make sense.",
+    "I think the course was taught and assessed well, and the practical assignments were the most useful part for me.\n\nIf I had to suggest one improvement, it would be a worked example early on that follows a single request through every layer: the route, the controller, the model, the middleware and then a background job with Redis. Seeing the whole path at once would have cleared up the confusion I had about how the pieces connect, before the assignments asked us to build all of them.",
+    "When I build an application with a front end and a back end, I'll think about how the different parts connect from the start, instead of building each piece separately and joining them at the end.\n\nI also plan to think about how I will test each part before I build it, because that helps me confirm I'm on the right track. I will keep the important rules in small functions that are separate from the database, because that made the refund and time checks easy to test without needing MySQL or Redis."
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "title": "Retour sur le cours",
+  "instructions": "Merci de répondre honnêtement et avec vos propres mots. Quelques phrases par question suffisent.",
+  "placeholder": "Écrivez votre réponse ici",
+  "submit": "Envoyer mes réponses",
+  "thanks": "Merci pour vos commentaires !",
+  "questions": [
+    "Quel sujet de ce cours avez-vous trouvé le plus difficile, et pourquoi ?",
+    "Décrivez un concept que vous n'avez compris qu'après les travaux pratiques. Qu'est-ce qui a fait le déclic ?",
+    "Comment votre approche de la conception de bases de données ou d'API a-t-elle changé depuis le début du trimestre ?",
+    "Qu'amélioreriez-vous dans la façon dont ce cours a été enseigné ou évalué ?",
+    "Comment comptez-vous appliquer ce que vous avez appris dans ce cours à l'avenir ?"
+  ],
+  "answers": [
+    "Le plus difficile pour moi a été de voir comment tout s'assemble. Les routes et les contrôleurs avaient du sens séparément, mais il était plus difficile de comprendre leur fonctionnement d'ensemble, surtout avec l'arrivée des middlewares, puis de Redis avec les files d'attente et les notifications. Suivre une seule requête depuis la route, à travers le contrôleur, jusqu'au modèle et à la base de données, puis vers une tâche en arrière-plan, m'a demandé un vrai effort avant que cela devienne clair.\n\nLes différentes formes de normalisation des bases de données m'ont aussi paru confuses au début. Découper le tableur de la clinique en patients, médecins et rendez-vous m'a aidé, car j'ai compris pourquoi les informations répétées doivent avoir leur propre table.",
+    "Les tests. Je n'ai vraiment compris la différence entre les tests unitaires et les tests d'intégration qu'après les travaux pratiques. Un test unitaire vérifie une seule fonction isolément, ce qui me permet de savoir qu'elle fait bien son travail sans avoir besoin d'une base de données. Cela m'a aussi aidé à déterminer si le problème venait du test ou du code. La plupart du temps, c'était le code, pas le test.\n\nTester les cas limites aide à trouver où le code pourrait être faux. Je l'ai utilisé sur le calcul du remboursement, en vérifiant exactement 24 heures et exactement 48 heures, ainsi que sur la vérification de l'heure du rendez-vous, avec 17h00 et 09h15. C'est là que j'ai compris pourquoi les limites comptent autant.",
+    "Je le vois maintenant comme un cycle connecté, une feuille de route plutôt que des éléments séparés. Tout commence par le schéma, auquel il faut beaucoup réfléchir : les contraintes, les clés primaires et étrangères, l'interaction entre les tables, et les colonnes qui doivent être uniques ou indexées.\n\nDans le projet de la clinique, le schéma a déterminé beaucoup de choses. Par exemple, la règle selon laquelle un médecin ne peut pas avoir deux rendez-vous à la même heure est appliquée par la base de données elle-même grâce à une contrainte d'unicité, donc l'API n'a plus qu'à gérer clairement cette erreur. Une fois le schéma bien planifié, le reste de l'API devient beaucoup plus facile, car je sais déjà de quels contrôleurs, routes et méthodes de base de données j'ai besoin, et je peux concevoir des points d'accès cohérents.",
+    "Je pense que le cours a été bien enseigné et bien évalué, et que les travaux pratiques ont été la partie la plus utile pour moi.\n\nS'il fallait suggérer une amélioration, ce serait un exemple détaillé, dès le début, qui suit une seule requête à travers toutes les couches : la route, le contrôleur, le modèle, le middleware, puis une tâche en arrière-plan avec Redis. Voir tout le parcours d'un coup aurait dissipé ma confusion sur la façon dont les éléments se connectent, avant que les travaux ne nous demandent de tous les construire.",
+    "Quand je construirai une application avec un front-end et un back-end, je réfléchirai dès le départ à la façon dont les différentes parties se connectent, au lieu de construire chaque élément séparément et de les relier à la fin.\n\nJe compte aussi penser à la manière dont je testerai chaque partie avant de la construire, car cela m'aide à confirmer que je suis sur la bonne voie. Je garderai les règles importantes dans de petites fonctions séparées de la base de données, car cela a rendu les vérifications du remboursement et de l'heure faciles à tester sans avoir besoin de MySQL ou de Redis."
+  ]
+}
