@@ -1,7 +1,7 @@
 'use strict';
 require('dotenv').config();
 const { createRedis } = require('./config/redis');
-const { KEYS, getClient } = require('./queues/queue');
+const { KEYS, getClient, waitlistKey } = require('./queues/queue');
 const handlers = require('./queues/jobHandlers');
 
 const MAX_ATTEMPTS = 3;
@@ -14,14 +14,22 @@ let running = true;
 /**
  * Runs once when the worker starts.
  *
- * If the last run stopped halfway through a job, that job is still in the
- * "processing" list. This puts those jobs back at the front of the queue.
+ * If the last run stopped halfway, unfinished work is still in the "processing" lists.
+ *  1. Unfinished jobs go back to the front of the job queue
+ *  2. Waitlisted patients being booked go back to the front of their own waitlist
  */
 async function recover() {
   let moved;
   do {
     moved = await redis.lmove(KEYS.jobsProcessing, KEYS.jobs, 'RIGHT', 'LEFT');
   } while (moved);
+
+  let raw = await redis.lpop(KEYS.waitlistProcessing);
+  while (raw) {
+    const entry = JSON.parse(raw);
+    await redis.lpush(waitlistKey(entry.doctorId, entry.day), raw);
+    raw = await redis.lpop(KEYS.waitlistProcessing);
+  }
 }
 
 /**
