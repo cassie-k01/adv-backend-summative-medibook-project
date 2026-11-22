@@ -1,6 +1,11 @@
 'use strict';
 const { createRedis } = require('../config/redis');
 
+// The names of the Redis lists we use.
+const KEYS = {
+  jobs: 'queue:jobs',
+};
+
 let client = null;
 
 // One shared connection, created the first time it is needed.
@@ -12,6 +17,17 @@ function getClient() {
 // Every doctor and every day has its own waitlist, e.g. "waitlist:1:2026-12-07".
 function waitlistKey(doctorId, day) {
   return `waitlist:${doctorId}:${day}`;
+}
+
+/**
+ * Adds a note to the job queue for the worker to pick up later.
+ *
+ * type is the kind of job, e.g. 'notify' or 'slot-freed'.
+ * payload is the information the worker needs to do it.
+ */
+async function enqueueJob(type, payload) {
+  const job = { type, payload, attempts: 0, enqueuedAt: new Date().toISOString() };
+  await getClient().rpush(KEYS.jobs, JSON.stringify(job));
 }
 
 /**
@@ -37,4 +53,4 @@ async function joinWaitlist({ patientId, doctorId, day, requestedDatetime }) {
   return { alreadyQueued: false, position: length };
 }
 
-module.exports = { getClient, waitlistKey, joinWaitlist };
+module.exports = { KEYS, getClient, waitlistKey, enqueueJob, joinWaitlist };
