@@ -128,3 +128,54 @@ Create a **simple HTML page** (served by your Express app at `GET /feedback`) co
 - A short **viva/demo (10 minutes)** walkthrough.
 
 **Automatic penalties:** SQL injection vector anywhere in the app (−15), secrets committed to the repo (−5), app does not start per README instructions (−10), work the student cannot explain in the video (or at a follow-up viva if called) | Academic integrity referral; affected criteria re-scored at Developing or below |
+
+## Setup
+
+Requires Node 22, MySQL 8.0.16+ and Redis.
+
+    npm install
+    cp .env.example .env        # add your MySQL password
+    mysql -u root -p < database/schema.sql
+    mysql -u root -p < database/seed.sql
+    docker run -d -p 6379:6379 --name medibook-redis redis
+    npm run dev                 # API on http://localhost:3000
+    npm run worker              # second terminal
+    npm test
+
+## API endpoints
+
+| Method and path | Purpose | Success |
+|---|---|---|
+| `GET /api/patients`, `GET /api/patients/:id` | read patients | 200 |
+| `POST /api/patients` | create a patient | 201 |
+| `PUT /api/patients/:id` | update a patient | 200 |
+| `DELETE /api/patients/:id` | delete a patient | 204 |
+| `GET /api/doctors`, `GET /api/doctors/:id` | read doctors | 200 |
+| `POST /api/doctors` | create a doctor | 201 |
+| `PUT /api/doctors/:id` | update a doctor | 200 |
+| `DELETE /api/doctors/:id` | delete a doctor | 204 |
+| `GET /api/doctors/:id/stats` | revenue, upcoming count, next 7 days, utilization | 200 |
+| `POST /api/appointments` | book an appointment | 201 |
+| `GET /api/appointments/:id` | read one appointment | 200 |
+| `POST /api/appointments/:id/cancellation` | cancel and get the refund | 201 |
+| `POST /api/waitlist` | join the waitlist for a full slot or day | 201 |
+| `GET /api/reports/doctors` | every doctor's totals and revenue | 200 |
+| `GET /api/reports/busy-days` | doctor-days above 80% of the cap | 200 |
+| `GET /feedback?lang=fr` | feedback page in English or French | 200 |
+
+Booking body: `{ "patient_id": 1, "doctor_id": 3, "appt_datetime": "2026-12-21T09:00" }`
+
+Status codes: 400 malformed input, 404 not found, 409 conflict (slot taken, day full, duplicate email, already cancelled, record still has appointments), 422 breaks a rule (past time, not on :00 or :30, outside working hours).
+
+## Refund policy
+
+Notice is the appointment start minus the cancellation time.
+
+| Notice | Refund |
+|---|---|
+| more than 48 hours | 100% |
+| 24 to 48 hours, including exactly 24 and exactly 48 | 50% |
+| less than 24 hours | 0% |
+## Demo video
+
+[Watch the demo video](https://youtube.com/watch?v=MLm1GE56GLA&si=v8whsz_PtCB6Lnnn)
